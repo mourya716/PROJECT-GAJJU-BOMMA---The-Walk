@@ -24,63 +24,7 @@
             color: var(--text);
             font-family: 'Outfit', sans-serif;
             overflow-x: hidden;
-            overflow-y: hidden; /* Locked until start */
             transition: background-color 1s ease;
-        }
-        
-        body.started {
-            overflow-y: scroll; /* Unlock scroll after clicking start */
-        }
-
-        /* --- NEW: START SCREEN (Required for Music) --- */
-        #start-screen {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: #000;
-            z-index: 9999;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            transition: opacity 1s ease;
-        }
-
-        #start-btn {
-            padding: 15px 40px;
-            font-size: 1.5rem;
-            background: transparent;
-            color: var(--accent);
-            border: 2px solid var(--accent);
-            border-radius: 50px;
-            cursor: pointer;
-            font-family: 'Playfair Display', serif;
-            letter-spacing: 2px;
-            transition: 0.3s;
-            animation: pulseBtn 2s infinite;
-            margin-top: 20px;
-        }
-
-        #start-btn:hover {
-            background: var(--accent);
-            color: #000;
-            box-shadow: 0 0 30px var(--accent);
-        }
-        
-        @keyframes pulseBtn { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
-
-        /* --- NEW: MUSIC CONTROL --- */
-        #music-control {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 10000;
-            background: rgba(255,255,255,0.1);
-            backdrop-filter: blur(5px);
-            padding: 10px;
-            border-radius: 50%;
-            cursor: pointer;
-            border: 1px solid rgba(255,255,255,0.3);
-            display: none; /* Hidden until started */
         }
 
         /* PROGRESS BAR (Top) */
@@ -209,19 +153,8 @@
 </head>
 <body>
 
-    <audio id="bg-music" loop>
-        <source src="gaaju_bomma.mp3" type="audio/mpeg">
-    </audio>
-
-    <div id="start-screen">
-        <h1 style="color: var(--accent); font-size: 4rem;">Gajju Bomma</h1>
-        <p style="opacity: 0.8; font-size: 1rem;">Use Headphones for the best experience.</p>
-        <button id="start-btn" onclick="startExperience()">Enter The World</button>
-    </div>
-
     <div id="progress"></div>
     <div class="flashlight" id="torch"></div>
-    <div id="music-control" onclick="toggleMusic()">🎵</div>
 
     <section id="scene-1" class="active">
         <h1>She is a Gajju Bomma</h1>
@@ -294,39 +227,6 @@
     </section>
 
     <script>
-        // --- MUSIC ENGINE ---
-        const audio = document.getElementById('bg-music');
-        const startScreen = document.getElementById('start-screen');
-        const musicCtrl = document.getElementById('music-control');
-
-        function startExperience() {
-            // Unlock Scroll
-            document.body.classList.add('started');
-            
-            // Fade out start screen
-            startScreen.style.opacity = 0;
-            setTimeout(() => {
-                startScreen.style.display = 'none';
-                musicCtrl.style.display = 'block';
-            }, 1000);
-
-            // Play Music
-            audio.volume = 0.5;
-            audio.play().catch(error => {
-                console.log("Audio blocked by browser, click music icon to play.");
-            });
-        }
-
-        function toggleMusic() {
-            if(audio.paused) {
-                audio.play();
-                musicCtrl.innerText = "🎵";
-            } else {
-                audio.pause();
-                musicCtrl.innerText = "🔇";
-            }
-        }
-
         // --- LOGIC ENGINE ---
         
         const sections = document.querySelectorAll('section');
