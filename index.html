@@ -22,16 +22,16 @@
             background-color: var(--bg);
             color: var(--text);
             font-family: 'Outfit', sans-serif;
-            overflow-x: hidden; /* Hide scroll until started */
-            overflow-y: hidden; 
+            overflow-x: hidden;
+            overflow-y: hidden; /* Locked until start */
             transition: background 1.5s ease;
         }
 
         body.started {
-            overflow-y: scroll; /* Enable scroll after start */
+            overflow-y: scroll; /* Unlocked after start */
         }
 
-        /* --- START SCREEN ( CINEMATIC INTRO ) --- */
+        /* --- START SCREEN --- */
         #start-screen {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -66,7 +66,7 @@
 
         @keyframes pulseBtn { 0% { opacity: 0.8; transform: scale(1); } 50% { opacity: 1; transform: scale(1.05); } 100% { opacity: 0.8; transform: scale(1); } }
 
-        /* MUSIC CONTROL (Floating) */
+        /* MUSIC CONTROL */
         #music-control {
             position: fixed;
             bottom: 20px;
@@ -78,10 +78,10 @@
             border-radius: 50%;
             cursor: pointer;
             border: 1px solid rgba(255,255,255,0.3);
-            display: none; /* Hidden until start */
+            display: none;
         }
 
-        /* SCROLL PROGRESS */
+        /* PROGRESS BAR */
         #progress-bar {
             position: fixed;
             top: 0; left: 0;
@@ -132,7 +132,7 @@
             color: rgba(255, 255, 255, 0.8);
         }
 
-        /* SCENE 1: INTRO */
+        /* SCENE 1 */
         #scene-1 h1 {
             background: linear-gradient(to right, #ff9966, #ff5e62);
             -webkit-background-clip: text;
@@ -164,7 +164,7 @@
         }
         .flashlight-text { z-index: 61; position: relative; color: #fff; text-shadow: 0 0 10px #fff; }
 
-        /* SCENE 4: EXPECTATIONS (Heavy Text) */
+        /* SCENE 4: EXPECTATIONS */
         .heavy-word {
             display: inline-block;
             font-size: 1.2rem;
@@ -241,7 +241,6 @@
             pointer-events: none;
             z-index: 150;
         }
-
     </style>
 </head>
 <body>
@@ -271,7 +270,7 @@
     <section id="scene-2" data-color="#1a0505">
         <h2 style="color: #ff4d4d;">The Silent Storm</h2>
         <p>Men, imagine your bones aching, your stomach twisting, and your energy draining...<br>
-        <span style="color: #800000; font-weight: bold; text-shadow: 0 0 10px rgba(128,0,0,0.5);">Now imagine you have to smile and work through it.</span></p>
+        <span style="color: #b30000; font-weight: bold; font-size: 1.6rem; text-shadow: 0 0 10px rgba(179, 0, 0, 0.4);">Now imagine you have to smile and work through it.</span></p>
         <p>She doesn't ask for pity. She just asks for patience.<br>
         When she is quiet, when she is tired—it's not attitude. It's battle.</p>
     </section>
@@ -333,25 +332,26 @@
     </section>
 
     <script>
-        // --- MUSIC & START ENGINE ---
+        // --- MUSIC & START ENGINE (FIXED) ---
         const audio = document.getElementById('bg-music');
         const startScreen = document.getElementById('start-screen');
         const musicCtrl = document.getElementById('music-control');
         
         function startExperience() {
-            // Play Audio
-            audio.volume = 0.5; // Start at 50% volume
+            // 1. OPEN THE WORLD IMMEDIATELY (Don't wait for music)
+            startScreen.style.opacity = 0;
+            setTimeout(() => {
+                startScreen.style.display = 'none';
+                document.body.classList.add('started'); // Enable scroll
+                musicCtrl.style.display = 'block';
+            }, 1000);
+
+            // 2. Try to play Music
+            audio.volume = 0.5;
             audio.play().then(() => {
-                // Fade out start screen
-                startScreen.style.opacity = 0;
-                setTimeout(() => {
-                    startScreen.style.display = 'none';
-                    document.body.classList.add('started'); // Enable scroll
-                    musicCtrl.style.display = 'block';
-                }, 1500);
+                console.log("Music started successfully");
             }).catch(error => {
-                console.log("Audio play failed (user interaction needed).", error);
-                alert("Please click again to start music.");
+                console.log("Music failed to start (File missing or browser blocked). Website will still work.");
             });
         }
 
